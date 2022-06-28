@@ -26,7 +26,7 @@ const AuthTooltip = () => {
 
             >Регистрация</Button>
             <br />
-            <p style={{ whiteSpace: "nowrap" }}>
+            <p style={{ whiteSpace: "nowrap", fontSize: "15px" }}>
 
               Нет учётной записи?
             </p>
