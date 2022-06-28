@@ -1,16 +1,2 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
-p{
-    font-family: 'Ubuntu',
-sans-serif;
-    font-size: 20px;
-    white-space: pre-wrap;
-    color: #494949;
-}
-
-pre{
-    font-family: 'Ubuntu',
-            sans-serif;
-        font-size: 20px;
-    white-space: pre-wrap;
-}
