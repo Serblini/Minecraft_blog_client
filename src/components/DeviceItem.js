@@ -21,7 +21,17 @@ const DeviceItem = ({ device }) => {
             {/* <Image width={18} height={18} src={star} /> */}
           </div>
         </div>
-        <div>{device.description}</div>
+        <div
+          style={{
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+
+            padding: 5,
+          }}
+        >
+          {device.description.replace(/<[^>]+>/g, "")}
+        </div>
       </Card>
     </Col>
   );

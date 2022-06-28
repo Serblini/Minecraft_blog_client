@@ -1,24 +1,20 @@
 import React, { useState, useContext, useRef } from "react";
 import { Context } from "../index";
 import { NavLink } from "react-router-dom";
-import { SHOP_ROUTE, ADMIN_ROUTE } from "../utils/consts";
-import { Button, Overlay, OverlayTrigger } from "react-bootstrap";
+import { SHOP_ROUTE } from "../utils/consts";
+import { OverlayTrigger } from "react-bootstrap";
 import AuthTooltip from "./AuthTooltip";
 import CreatePostPopover from "./CreatePostPopover";
 import CreateTypePopover from "./CreateTypePopover";
 import DeletePostPopover from "./DeletePostPopover";
-import DeviceList from "./DeviceList";
 
 const SideBar = () => {
   const [showAuthTooltip, setShowAuthTooltip] = useState(false);
   // const [showPopoverPost, setShowPopoverPost] = useState(false);
   // const [showPopoverType, setShowPopoverType] = useState(false);
-  const [target, setTarget] = useState(null);
+
   const { user } = useContext(Context);
   const targetRef = useRef(null);
-  const secondTargetRef = useRef(null);
-
-  const [value, setValue] = useState("");
 
   //      filteredItems.map(device,index) для выввода
   // }
@@ -100,7 +96,7 @@ const SideBar = () => {
             </OverlayTrigger>
           )}
 
-          {user.user.role == "ADMIN" && (
+          {user.user.role === "ADMIN" && (
             <OverlayTrigger
               trigger="click"
               placement="right"
@@ -133,7 +129,7 @@ const SideBar = () => {
             </OverlayTrigger>
           )}
 
-          {user.user.role == "ADMIN" && (
+          {user.user.role === "ADMIN" && (
             <OverlayTrigger
               trigger="click"
               placement="right"
