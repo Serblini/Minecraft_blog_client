@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
+  Alert,
   Popover,
   Button,
   Row,
@@ -21,6 +22,7 @@ const CreatePostPopover = observer(() => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
+  const [show, setShow] = useState(false);
   // const [info, setInfo] = useState([])
 
   // useEffect(() => {
@@ -30,16 +32,6 @@ const CreatePostPopover = observer(() => {
   const loadTypes = () => {
     fetchTypes().then((data) => device.setTypes(data));
   };
-
-  // const addInfo = () => {
-  //   setInfo([...info, { title: '', description: '', number: Date.now() }])
-  // }
-  // const removeInfo = (number) => {
-  //   setInfo(info.filter(i => i.number !== number))
-  // }
-  // const changeInfo = (key, value, number) => {
-  //   setInfo(info.map(i => i.number === number ? { ...i, [key]: value } : i))
-  // }
 
   const selectFile = (e) => {
     setFile(e.target.files[0]);
@@ -60,6 +52,7 @@ const CreatePostPopover = observer(() => {
     formData.append("typeId", device.selectedType.id);
     // formData.append('info', JSON.stringify(info))
     createDevice(formData).then((data) => pushShop);
+    setShow(true);
     // this.refs.overlay.handleHide();
   }
 
@@ -123,6 +116,20 @@ const CreatePostPopover = observer(() => {
           >
             Добавить
           </Button>
+          {show && (
+            <div>
+              <Alert
+                variant="success"
+                onMouseLeave={() => setShow(false)}
+                onClose={() => setShow(false)}
+                dismissible
+              >
+                <Alert.Heading>Пост успешно добавлен</Alert.Heading>
+                <p>Вы можете закрыть это окно</p>
+              </Alert>
+              {/* <Button onClick={() => setShow(true)}>Show Alert</Button> */}
+            </div>
+          )}
           {/* </OverlayTrigger> */}
         </div>
       </div>

@@ -1,35 +1,46 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { Button, Form, Popover } from "react-bootstrap";
+import { Alert, Button, Form, Popover } from "react-bootstrap";
 import { useHistory } from "react-router";
 import { deleteDevice } from "../http/deviceAPI";
 import { SHOP_ROUTE } from "../utils/consts";
 import { Context } from "../index";
-import { fetchSearchDevices } from "../http/deviceAPI";
+import { fetchSearchDevices, fetchDevices } from "../http/deviceAPI";
 import "./DeviceList.css";
 const DeletePostPopover = () => {
   const [id, setId] = useState("");
+  const [show, setShow] = useState(false);
+
   const history = useHistory();
   const { device } = useContext(Context);
+
   const deleteOneDevice = () => {
     deleteDevice(id).then((data) => {
       setId("");
       pushShop();
+      setShow(true);
     });
   };
   const pushShop = () => {
     history.push(SHOP_ROUTE);
   };
 
+  function byField(field) {
+    return (a, b) => (a[field] > b[field] ? 1 : -1);
+  }
+
   // фильтрация
   const formEl = useRef();
 
-  const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     if (formEl && formEl.current) {
       formEl.current.addEventListener("keydown", clearClickEnter);
     }
+    fetchDevices(null, null, 1, 90).then((data) => {
+      device.setLists(data.rows);
+      device.setTotalCount(data.count);
+    });
   }, []);
 
   const clearClickEnter = (e) => {
@@ -37,20 +48,32 @@ const DeletePostPopover = () => {
       e.preventDefault();
     }
   };
-  let sDevices = fetchSearchDevices();
-  console.log(sDevices);
+
   //    Сортировка
-  const filteredItems = device.devices.filter((device) => {
-    return device.name.toLowerCase().includes(value.toLowerCase());
-    // return device.findIndex(() => 'thick scales');
-  });
+
+  var sort_by = function (field, reverse, primer) {
+    var key = primer
+      ? function (x) {
+          return primer(x[field]);
+        }
+      : function (x) {
+          return x[field];
+        };
+
+    reverse = !reverse ? 1 : -1;
+
+    return function (a, b) {
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
+  };
 
   const itemClickHandler = (e) => {
-    setValue(e.target.textContent);
     setIsOpen(!isOpen);
   };
 
   const inputClickHandler = () => [setIsOpen(true)];
+
+  // let sArr = Arr.sh.sort(byField("id"));
 
   return (
     <div>
@@ -62,10 +85,7 @@ const DeletePostPopover = () => {
           <Form>
             <Form.Control
               value={id}
-              onChange={
-                ((e) => setId(e.target.value),
-                (event) => setValue(event.target.value))
-              }
+              onChange={(e) => setId(e.target.value)}
               placeholder={"ID статьи"}
               className="search_input"
               style={{ width: 255 }}
@@ -73,19 +93,25 @@ const DeletePostPopover = () => {
               // onSubmit={() => false}
               ref={formEl}
             />
-            <ul className="autocomplete" style={{ marginTop: 25 }}>
+            <ul
+              className="autocomplete"
+              style={{ marginTop: 25 }}
+              onMouseLeave={itemClickHandler}
+            >
               {isOpen &&
-                filteredItems.map((device) => {
-                  return (
-                    <li
-                      className="autocomplete_item"
-                      onClick={itemClickHandler}
-                      key={device.id}
-                    >
-                      id: {device.id}: {device.name}
-                    </li>
-                  );
-                })}
+                device.lists
+                  .map((device) => {
+                    return (
+                      <li
+                        className="autocomplete_item"
+                        onClick={itemClickHandler}
+                        key={device.id}
+                      >
+                        id: {device.id}: {device.name.replace(/\[.+\]/, "")}
+                      </li>
+                    );
+                  })
+                  .sort((a, b) => Number(b.id) - Number(a.id))}
             </ul>
           </Form>
           <div className="mt-3">
@@ -97,6 +123,22 @@ const DeletePostPopover = () => {
             >
               Удалить
             </Button>
+            {show && (
+              <div>
+                <Alert
+                  variant="success"
+                  onMouseLeave={() => setShow(false)}
+                  onClose={() => setShow(false)}
+                  dismissible
+                >
+                  <Alert.Heading>Пост успешно удален</Alert.Heading>
+                  <p style={{ fontSize: "16px" }}>
+                    Пожалуйста, обновите страницу, чтобы увидеть изменения
+                  </p>
+                </Alert>
+                {/* <Button onClick={() => setShow(true)}>Show Alert</Button> */}
+              </div>
+            )}
           </div>
         </div>
       </Popover>
