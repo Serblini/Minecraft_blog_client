@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { fetchOneDevice } from "../http/deviceAPI";
 import PopularPosts from "./PopularPosts";
 import "./DevicePage.css";
+
 const DevicePage = () => {
   const [device, setDevice] = useState({ info: [] });
   const { id } = useParams();
