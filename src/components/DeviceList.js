@@ -4,7 +4,7 @@ import { Context } from "../index";
 import { Row, Col, Form } from "react-bootstrap";
 import DeviceItem from "./DeviceItem";
 import "./DeviceList.css";
-import { fetchDevices } from "../http/deviceAPI";
+
 
 const DeviceList = observer(() => {
   const { device } = useContext(Context);
@@ -18,10 +18,7 @@ const DeviceList = observer(() => {
     if (formEl && formEl.current) {
       formEl.current.addEventListener("keydown", clearClickEnter);
     }
-    fetchDevices(null, null, 1, 10).then((data) => {
-      device.setDevices(data.rows);
-      device.setTotalCount(data.count);
-    });
+    
   }, []);
 
   const clearClickEnter = (e) => {
